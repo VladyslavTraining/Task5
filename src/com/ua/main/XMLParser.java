@@ -10,6 +10,9 @@ import java.util.List;
 
 public class XMLParser extends AbstractColumnData {
 
+    private static final String FILE_NAME = "cd_catalog.xml";
+    public static final List<CD> CD_LIST = instanceList(FILE_NAME);
+
     public static void writeToCSV(String[] arr, String fileName) {
         try {
             FileWriter fw = new FileWriter(fileName, true);
