@@ -11,5 +11,4 @@ public @interface Column {
     int columnOrder();
 
     String columnType();
-
 }

@@ -8,10 +8,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XMLParser extends AbstractColumnData {
+public class XMLParser {
 
     private static final String FILE_NAME = "cd_catalog.xml";
-    public static final List<CD> CD_LIST = instanceList(FILE_NAME);
+    public static final List<CD> CD_LIST = getListOfInstances(FILE_NAME);
 
     public static void writeToCSV(String[] arr, String fileName) {
         try {
@@ -25,7 +25,7 @@ public class XMLParser extends AbstractColumnData {
         }
     }
 
-    public static List<CD> instanceList(String fileName) {
+    public static List<CD> getListOfInstances(String fileName) {
         List<CD> cd = new ArrayList<>();
         File file = new File(fileName);
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -45,7 +45,7 @@ public class XMLParser extends AbstractColumnData {
                     cd1.setCountry(element.getElementsByTagName("COUNTRY").item(0).getTextContent());
                     cd1.setCompany(element.getElementsByTagName("COMPANY").item(0).getTextContent());
                     cd1.setPrice(element.getElementsByTagName("PRICE").item(0).getTextContent() + "$");
-                    cd1.setYear(element.getElementsByTagName("YEAR").item(0).getTextContent());
+                    cd1.setYear(Integer.parseInt(element.getElementsByTagName("YEAR").item(0).getTextContent()));
                     cd.add(cd1);
                 }
             }

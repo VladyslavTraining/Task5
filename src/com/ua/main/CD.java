@@ -1,21 +1,23 @@
 package com.ua.main;
 
 
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
+
 public class CD extends AbstractColumnData {
 
-    @Column(columnName = "TITLE", columnOrder = 1, columnType = "String")
+    @Column(columnName = "Title", columnOrder = 1, columnType = "String")
     private String title;
-    @Column(columnName = "ARTIST", columnOrder = 2, columnType = "String")
+    @Column(columnName = "Artist", columnOrder = 2, columnType = "String")
     private String artist;
-    @Column(columnName = "COUNTRY", columnOrder = 3, columnType = "String")
+    @Column(columnName = "Country", columnOrder = 3, columnType = "String")
     private String country;
-    @Column(columnName = "COMPANY", columnOrder = 4, columnType = "String")
+    @Column(columnName = "Company", columnOrder = 4, columnType = "String")
     private String company;
-    @Column(columnName = "PRICE", columnOrder = 5, columnType = "String")
+    @Column(columnName = "Price", columnOrder = 5, columnType = "String")
     private String price;
-    @Column(columnName = "YEAR", columnOrder = 6, columnType = "String")
+    @Column(columnName = "Year", columnOrder = 6, columnType = "String")
     private String year;
-
 
     public void setTitle(String title) {
         this.title = title;
@@ -42,8 +44,10 @@ public class CD extends AbstractColumnData {
     }
 
 
-    public void setYear(String year) {
-        this.year = year;
+    public void setYear(Integer year) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Year of = Year.of(year);
+        this.year = of.atDay(1).format(formatter);
     }
 
     @Override

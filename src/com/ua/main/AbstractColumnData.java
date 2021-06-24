@@ -1,76 +1,51 @@
 package com.ua.main;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 
 public abstract class AbstractColumnData {
 
 
     public String getValue(String key) {
-        Field[] fields = this.getClass().getDeclaredFields();
-        String value = null;
-        for (Field f : fields) {
-            f.setAccessible(true);
-            Column c = f.getAnnotation(Column.class);
-            if (c != null) {
-                if (f.getName().equals(key)) {
-                    try {
-                        value = (String) f.get(this);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+        Field field = Arrays.stream(getClass().getDeclaredFields())
+                .peek(x -> x.setAccessible(true))
+                .filter(f -> f.isAnnotationPresent(Column.class))
+                .filter(x -> x.getName().equalsIgnoreCase(key))
+                .findAny().orElse(null);
+        try {
+            if (field != null) return String.valueOf(field.get(this));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException();
         }
-        return value;
+        return null;
     }
 
     public String[] getRow() {
         String[] row = new String[1];
-        Field[] fields = this.getClass().getDeclaredFields();
         StringBuilder sb = new StringBuilder();
-        int counter = 0;
-        for (Field f : fields) {
-            f.setAccessible(true);
-            Column column = f.getAnnotation(Column.class);
-            try {
-                if (column != null) {
-                    if (counter == fields.length - 1) {
-                        sb.append(f.get(this));
-                    } else {
-                        sb.append(f.get(this)).append(",");
+        Arrays.stream(getClass().getDeclaredFields())
+                .peek(x -> x.setAccessible(true))
+                .filter(x -> x.isAnnotationPresent(Column.class))
+                .forEach(x -> {
+                    try {
+                        sb.append(x.get(this)).append(",");
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
                     }
-                    counter++;
-                } else
-                    sb.append("null");
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        row[0] = sb.toString();
+                });
+        row[0] = sb.substring(0, sb.length() - 1);
         return row;
     }
 
 
     public String[] getColumn() {
         String[] column = new String[1];
-        Field[] fields = this.getClass().getDeclaredFields();
         StringBuilder sb = new StringBuilder();
-        int counter = 0;
-        for (Field field : fields) {
-            field.setAccessible(true);
-            Column c = field.getAnnotation(Column.class);
-            if (c != null) {
-                if (counter == fields.length - 1) {
-                    sb.append(field.getName());
-                } else {
-                    sb.append(field.getName()).append(",");
-                }
-                counter++;
-            } else
-                sb.append("null");
-        }
-        column[0] = sb.toString();
+        Arrays.stream(getClass().getDeclaredFields())
+                .peek(f -> f.setAccessible(true))
+                .forEach(f -> sb.append(f.getAnnotation(Column.class).columnName()).append(","));
+        column[0] = sb.substring(0, sb.length() - 1);
         return column;
     }
 
