@@ -1,6 +1,5 @@
 package com.ua.main;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -11,20 +10,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class POIWriter implements Writer {
+    public static final int START_POINT = 0;
 
-
-    private static void writeToXLSX(String[] arr, String fileName) throws IOException {
+    private static void writeAtTheBeginning(String[] arr, String fileName) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet();
-        int rowCount = 0;
+        writeToCell(arr, sheet, START_POINT);
+        try (FileOutputStream outputStream = new FileOutputStream(fileName)) {
+            workbook.write(outputStream);
+        }
+    }
+
+    private static void writeToCell(String[] arr, XSSFSheet sheet, int rowCount) {
         Row row = sheet.createRow(rowCount);
         for (int i = 0; i < arr.length; i++) {
-            Cell cell = row.createCell(i);
-            cell.setCellValue(arr[i]);
-        }
-        try (
-                FileOutputStream outputStream = new FileOutputStream(fileName)) {
-            workbook.write(outputStream);
+            row.createCell(i).setCellValue(arr[i]);
         }
     }
 
@@ -32,23 +32,20 @@ public class POIWriter implements Writer {
     public void write(String[] arr, String fileName) {
         try {
             if (!new File(fileName).exists()) {
-                writeToXLSX(arr, fileName);
-                return;
+                writeAtTheBeginning(arr, fileName);
+            } else {
+                FileInputStream xlsxFile = new FileInputStream(fileName);
+                XSSFWorkbook cdBook = new XSSFWorkbook(xlsxFile);
+                XSSFSheet cdSheet = cdBook.getSheetAt(START_POINT);
+                int lastRow = cdSheet.getLastRowNum();
+                writeToCell(arr, cdSheet, ++lastRow);
+                xlsxFile.close();
+                FileOutputStream outputFile = new FileOutputStream(fileName);
+                cdBook.write(outputFile);
+                outputFile.close();
             }
-            FileInputStream xlsxFile = new FileInputStream(fileName);
-            XSSFWorkbook cdSheet = new XSSFWorkbook(xlsxFile);
-            XSSFSheet worksheet = cdSheet.getSheetAt(0);
-            int lastRow = worksheet.getLastRowNum();
-            Row row = worksheet.createRow(++lastRow);
-            for (int i = 0; i < arr.length; i++) {
-                row.createCell(i).setCellValue(arr[i]);
-            }
-            xlsxFile.close();
-            FileOutputStream outputFile = new FileOutputStream(fileName);
-            cdSheet.write(outputFile);
-            outputFile.close();
-        } catch (Exception e) {
-            System.out.println("Exception here");
+        } catch (IOException e) {
+            throw new RuntimeException();
         }
     }
 

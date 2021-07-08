@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Main {
 
-    private static String resultCSV = "result.csv";
-    private static String resultXLS = "resultExcel.xls";
-    private static String resultApachePOI = "apachePoi.xlsx";
+    private static final String resultCSV = "result.csv";
+    private static final String resultXLS = "resultExcel.xls";
+    private static final String resultApachePOI = "resultExcelPoi.xlsx";
 
     public static void main(String[] args) {
         List<CD> cdList = XMLParser.CD_LIST;
@@ -19,7 +19,6 @@ public class Main {
         getResult(cdList, writerPOI, resultApachePOI);
         getResult(cdList, writerXLS, resultXLS);
         getResult(cdList, writerCSV, resultCSV);
-
 
     }
 

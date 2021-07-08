@@ -22,7 +22,6 @@ public abstract class AbstractColumnData {
                 .stream()
                 .map(this::getFieldValue)
                 .collect(Collectors.joining(","));
-//        return new String[]{rowValues};
         return rowValues.split(",");
     }
 
@@ -43,15 +42,10 @@ public abstract class AbstractColumnData {
     }
 
     public String[] getColumn() {
-//        StringBuilder sb = new StringBuilder();
-//        Arrays.stream(getClass().getDeclaredFields())
-//                .forEach(f -> sb.append(f.getAnnotation(Column.class).columnName()).append(","));
-//        return new String[]{sb.substring(0, sb.length() - 1)};
         String columnValues = getFieldAnnotatedColumn()
                 .stream()
                 .map(f -> f.getAnnotation(Column.class).columnName())
                 .collect(Collectors.joining(","));
-//        return new String[]{columnValues};
         return columnValues.split(",");
     }
 
