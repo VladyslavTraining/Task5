@@ -14,9 +14,9 @@ public class CD extends AbstractColumnData {
     private String country;
     @Column(columnName = "Company", columnOrder = 4, columnType = "String")
     private String company;
-    @Column(columnName = "Price", columnOrder = 5, columnType = "String")
+    @Column(columnName = "Price", columnOrder = 5, columnType = "Money")
     private String price;
-    @Column(columnName = "Year", columnOrder = 6, columnType = "String")
+    @Column(columnName = "Year", columnOrder = 6, columnType = "Date")
     private String year;
 
     public void setTitle(String title) {
@@ -44,15 +44,10 @@ public class CD extends AbstractColumnData {
     }
 
 
-    public void setYear(Integer year) {
+    public void setYear(int year) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        Year of = Year.of(year);
-        this.year = of.atDay(1).format(formatter);
-    }
-
-    @Override
-    public String[] getRow() {
-        return super.getRow();
+        Year year1 = Year.of(year);
+        this.year = year1.atDay(1).format(formatter);
     }
 
     @Override

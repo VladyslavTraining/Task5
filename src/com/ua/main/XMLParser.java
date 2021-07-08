@@ -13,18 +13,6 @@ public class XMLParser {
     private static final String FILE_NAME = "cd_catalog.xml";
     public static final List<CD> CD_LIST = getListOfInstances(FILE_NAME);
 
-    public static void writeToCSV(String[] arr, String fileName) {
-        try {
-            FileWriter fw = new FileWriter(fileName, true);
-            for (String s : arr) {
-                fw.write(s + System.lineSeparator());
-            }
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static List<CD> getListOfInstances(String fileName) {
         List<CD> cd = new ArrayList<>();
         File file = new File(fileName);
@@ -50,7 +38,7 @@ public class XMLParser {
                 }
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
-            e.printStackTrace();
+            throw new RuntimeException();
         }
         return cd;
     }
