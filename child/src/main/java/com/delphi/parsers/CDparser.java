@@ -30,21 +30,20 @@ public class CDparser implements Parser<CD> {
     private void createCD(List<CD> cds, Matcher matcher) {
         while (matcher.find()) {
             CD cd = new CD();
-            cd.setTitle(getMatcher(matcher, 0).group(1));
-            cd.setArtist(getMatcher(matcher, 1).group(1));
-            cd.setCountry(getMatcher(matcher, 2).group(1));
-            cd.setCompany(getMatcher(matcher, 3).group(1));
-            cd.setPrice(Double.parseDouble(getMatcher(matcher, 4).group(1)));
-            cd.setYear(Integer.parseInt(getMatcher(matcher, 5).group(1)));
+            cd.setTitle(getMatcher(matcher, 0));
+            cd.setArtist(getMatcher(matcher, 1));
+            cd.setCountry(getMatcher(matcher, 2));
+            cd.setCompany(getMatcher(matcher, 3));
+            cd.setPrice(Double.parseDouble(getMatcher(matcher, 4)));
+            cd.setYear(Integer.parseInt(getMatcher(matcher, 5)));
             cds.add(cd);
         }
     }
 
-    private Matcher getMatcher(Matcher matcher, int count) {
-        Matcher tagMatcher;
-        tagMatcher = getPatterns()[count].matcher(matcher.group());
+    private String getMatcher(Matcher matcher, int count) {
+        Matcher tagMatcher = getPatterns()[count].matcher(matcher.group());
         tagMatcher.find();
-        return tagMatcher;
+        return tagMatcher.group(1);
     }
 
     private Pattern[] getPatterns() {
