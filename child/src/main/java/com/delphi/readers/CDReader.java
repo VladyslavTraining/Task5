@@ -1,23 +1,14 @@
 package com.delphi.readers;
 
 
+import com.delphi.Logger.LoggerInitialization;
+
 import java.io.*;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class CDReader implements Reader {
-    private static final Logger LOGGER;
 
-    static {
-        InputStream stream = CDReader.class.getClassLoader().
-                getResourceAsStream("logging.properties");
-        try {
-            LogManager.getLogManager().readConfiguration(stream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        LOGGER = Logger.getLogger(CDReader.class.getName());
-    }
+    private static final Logger LOGGER = new LoggerInitialization().initialization();
 
     private final String fileName;
 

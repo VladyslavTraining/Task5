@@ -1,26 +1,13 @@
 package com.delphi.writers;
 
 
-import com.delphi.parsers.CDParser;
+import com.delphi.Logger.LoggerInitialization;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class WriterFactory {
-    private static final Logger LOGGER;
 
-    static {
-        InputStream stream = WriterFactory.class.getClassLoader().
-                getResourceAsStream("logging.properties");
-        try {
-            LogManager.getLogManager().readConfiguration(stream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        LOGGER = Logger.getLogger(WriterFactory.class.getName());
-    }
+    private static final Logger LOGGER = new LoggerInitialization().initialization();
 
     public Writer createWriter(String ch) {
         switch (ch) {

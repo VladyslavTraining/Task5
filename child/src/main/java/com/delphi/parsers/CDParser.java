@@ -1,30 +1,18 @@
 package com.delphi.parsers;
 
 
+import com.delphi.Logger.LoggerInitialization;
 import com.delphi.data.CD;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.*;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CDParser implements Parser<CD> {
 
-    private static final Logger LOGGER;
-
-    static {
-        InputStream stream = CDParser.class.getClassLoader().
-                getResourceAsStream("logging.properties");
-        try {
-            LogManager.getLogManager().readConfiguration(stream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        LOGGER = Logger.getLogger(CDParser.class.getName());
-    }
+    private static final Logger LOGGER = new LoggerInitialization().initialization();
 
     @Override
     public List<CD> parse(byte[] arr) {
@@ -40,31 +28,34 @@ public class CDParser implements Parser<CD> {
     private void fillCDList(List<CD> cds, Matcher matcher) {
         while (matcher.find()) {
             CD cd = new CD();
-            cd.setTitle(getLineBetweenTags(matcher, 0));
-            cd.setArtist(getLineBetweenTags(matcher, 1));
-            cd.setCountry(getLineBetweenTags(matcher, 2));
-            cd.setCompany(getLineBetweenTags(matcher, 3));
-            cd.setPrice(Double.parseDouble(getLineBetweenTags(matcher, 4)));
-            cd.setYear(Integer.parseInt(getLineBetweenTags(matcher, 5)));
+            cd.setTitle(getLineBetweenTags(matcher, "TITLE"));
+            cd.setArtist(getLineBetweenTags(matcher, "ARTIST"));
+            cd.setCountry(getLineBetweenTags(matcher, "COUNTRY"));
+            cd.setCompany(getLineBetweenTags(matcher, "COMPANY"));
+            cd.setPrice(Double.parseDouble(getLineBetweenTags(matcher, "PRICE")));
+            cd.setYear(Integer.parseInt(getLineBetweenTags(matcher, "YEAR")));
             cds.add(cd);
         }
     }
 
-    private String getLineBetweenTags(Matcher matcher, int count) {
-        Matcher tagMatcher = getPatterns()[count].matcher(matcher.group());
+    private String getLineBetweenTags(Matcher matcher, String word) {
+        Matcher tagMatcher = Pattern.compile("<" + word + ">" + "(.+?)<\\/" + word + ">").matcher(matcher.group());
         tagMatcher.find();
         return tagMatcher.group(1);
     }
 
-    private Pattern[] getPatterns() {
-        Pattern[] content = new Pattern[6];
-        content[0] = Pattern.compile("<TITLE>(.+?)<\\/TITLE>");
-        content[1] = Pattern.compile("<ARTIST>(.+?)<\\/ARTIST>");
-        content[2] = Pattern.compile("<COUNTRY>(.+?)<\\/COUNTRY>");
-        content[3] = Pattern.compile("<COMPANY>(.+?)<\\/COMPANY>");
-        content[4] = Pattern.compile("<PRICE>(.+?)<\\/PRICE>");
-        content[5] = Pattern.compile("<YEAR>(.+?)<\\/YEAR>");
-        return content;
-    }
+//    private Pattern[] getPatterns(String word) {
+//        Pattern[] content = new Pattern[6];
+//        for (int i = 0; i < content.length; i++) {
+//            content[i] = Pattern.compile("<" + word + ">" + "(.+?)<\\/" + word + ">");
+//        }
+//        content[0] = Pattern.compile("<TITLE>(.+?)<\\/TITLE>");
+//        content[1] = Pattern.compile("<ARTIST>(.+?)<\\/ARTIST>");
+//        content[2] = Pattern.compile("<COUNTRY>(.+?)<\\/COUNTRY>");
+//        content[3] = Pattern.compile("<COMPANY>(.+?)<\\/COMPANY>");
+//        content[4] = Pattern.compile("<PRICE>(.+?)<\\/PRICE>");
+//        content[5] = Pattern.compile("<YEAR>(.+?)<\\/YEAR>");
+//        return content;
+//    }
 
 }
